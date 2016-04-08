@@ -19,6 +19,7 @@ subprojects {
     repositories { 
         jcenter()
     }
+    version = "8.17.0-RC1"
     group = "com.promethean.${githubProjectName}" // TEMPLATE: Set to organization of project
     apply plugin: 'be.insaneprogramming.gradle.animalsniffer'
 
