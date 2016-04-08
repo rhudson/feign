@@ -19,7 +19,7 @@ subprojects {
     repositories { 
         jcenter()
     }
-    group = "com.netflix.${githubProjectName}" // TEMPLATE: Set to organization of project
+    group = "com.promethean.${githubProjectName}" // TEMPLATE: Set to organization of project
     apply plugin: 'be.insaneprogramming.gradle.animalsniffer'
 
     animalsniffer { // Don't use apis that may not be available on Android
