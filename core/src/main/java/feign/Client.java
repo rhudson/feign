@@ -20,8 +20,7 @@ import static java.lang.String.format;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -74,10 +73,26 @@ public interface Client {
       return convertResponse(connection);
     }
 
+    HttpURLConnection createConnection(Request request) throws IOException {
+      URL url = new URL(request.url());
+      Proxy proxy = null;
+      if ("http".equalsIgnoreCase(url.getProtocol())) {
+        String host = System.getProperty("http.proxyHost");
+        String port = System.getProperty("http.proxyPort");
+        if (host != null && host.length() > 0 && port != null && port.length() > 0) {
+          SocketAddress addr = new InetSocketAddress(host, Integer.parseInt(port));
+          proxy = new Proxy(Proxy.Type.HTTP, addr);
+        }
+      }
+      if (proxy != null) {
+        return (HttpURLConnection) url.openConnection(proxy);
+      }
+      return (HttpURLConnection) url.openConnection();
+    }
+
     HttpURLConnection convertAndSend(Request request, Options options) throws IOException {
       final HttpURLConnection
-          connection =
-          (HttpURLConnection) new URL(request.url()).openConnection();
+          connection = createConnection(request);
       if (connection instanceof HttpsURLConnection) {
         HttpsURLConnection sslCon = (HttpsURLConnection) connection;
         if (sslContextFactory != null) {
